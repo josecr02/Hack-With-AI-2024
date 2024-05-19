@@ -1,4 +1,4 @@
-body {
+/* body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -20,14 +20,14 @@ code {
   align-items: center;
   justify-content: center;
   font-size: calc(30px + 2vmin);
-  color: rgb(58, 57, 57);
+  color: rgb(58, 57, 57); */
   /* position: relative; */
   /* font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; */
-  font-family: 'Poppins', sans-serif;
+  /* font-family: 'Poppins', sans-serif;
   padding-left: 30px;
-}
+} */
 
-.input-container {
+ /* .input-container {
   width: 50%;
   display: flex;
   border: solid 0.5px #1760ff;
@@ -60,27 +60,5 @@ code {
 
 .input-container button:active {
   background-color: #45d1ff;
-}
+} */
 
-.search-result {
-  width: 60%;
-  /* display: flex; */
-  /* border: solid 0.5px #0033ff; */
-  /* box-sizing: border-box;
-  border-radius: 6px; */
-  box-shadow: rgba(0, 0, 82, 0.15) 0 2px 4px;
-  overflow: hidden;
-  margin-top: 50px;
-}
-
-.answer {
-  padding: 13px 14px;
-  border: solid 0.5px #171616;
-  background-color: #fff;
-  margin: 5px;
-  font-size: 15px;
-  font-weight: 200;
-  font-weight: 200;
-  border-radius: 6px;
-
-}
