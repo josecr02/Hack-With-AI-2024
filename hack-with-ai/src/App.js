@@ -1,10 +1,79 @@
 import './App.css';
-import { useState } from 'react';
+//import './server.js';
+import { useState, useEffect } from 'react';
+
+import axios from 'axios';
+const cheerio = require("cheerio");
+const cors = require('cors');
+// const app = express(); // it releases the methods and stuff
+// app.use(cors());
+// const express = require('express');
+// const app = express(); // it releases the methods and stuff
+// app.use(cors());
+//app.use(express.json());
+//require('dotenv').config();
+// const pretty = require("pretty");
+// https://www.amazon.in/Acer-Nitro-AN515-57-i5-11400H-Graphics/product-reviews/B099ZZ13JB/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews
+
+// const scrape = (URL, reviews) => {
+
+  
+
+// }
+
+
 
 function App() {
 
-    const [ value, setValue ] = useState("");
-    const [ chatHistory, setChatHistory ] = useState([]);
+  const [ value, setValue ] = useState("");
+  //const [ URL, setURL ] = useState("");
+  const [ chatHistory, setChatHistory ] = useState([]);
+  const [reviews, setReviews] = useState([]);
+
+  var URL = 'https://www.amazon.in/Acer-Nitro-AN515-57-i5-11400H-Graphics/product-reviews/B099ZZ13JB/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews';
+  //var reviews = [];
+
+  //const scrape = async () => {
+
+  const scrapeData = async (URL) => {
+    console.log(URL);
+    try {
+      console.log(URL);
+      const { data } = await axios.get(URL);
+      const $ = cheerio.load(data);
+      const newReviews = [];
+      $('.review').each((i, elem) => {
+        const review = $(elem).find('.review-text-content span').text().trim();
+        const date = $(elem).find('.review-date').text().trim();
+        newReviews.push({ review, date });
+      });
+      console.log(newReviews);
+      setReviews(newReviews); // Update state with the scraped reviews
+      return reviews;
+    } catch (error) {
+      console.error('Error scraping data:', error);
+    }
+  };
+
+    
+    // axios.get(value)
+    //   .then(
+    //     ({ data }) => {
+    //       // console.log(data);
+    //       const $ = cheerio.load(data);
+    //       // Extract reviews and authors from the current page
+    //       $('.review').each((i, elem) => {
+    //         const review = $(elem).find('.review-text-content span').text().trim();
+    //         const date = $(elem).find('.review-date').text().trim();
+    //         reviews.push({ review, date });
+    //       });
+    //       console.log(reviews);
+    //       console.log('finished Scraping !');
+    //       setValue(reviews);
+    //       getResponse();
+    //     }
+    //   );
+  //}
 
     // response function~
   const getResponse = async () => {
@@ -13,13 +82,28 @@ function App() {
       return;
     }
 
+    const scrapedReviews = await scrapeData(reviews);
+    //console.log(scrapedReviews);
+
     try {
       // send to backend
       const options = {
         method: 'POST',
         body: JSON.stringify({
           history: chatHistory,
-          message: value
+          message: scrapedReviews + `
+            
+            Please generate a json response of the below form:
+            {
+              {
+                'review':,
+                'date':,
+                'Sentiment Score':,
+                'Primary Emotion':,
+              }
+            }
+            having it's sentiment score in range of -1,1 where the closer it is to 1, the more positive it is, the closer it is to -1, the more -ve it is. 0 means it's a neutral review. Also do an emotion analysis of the review and generate what emotion is being conveyed here (Joy, surprise, sadness, disgust, fear, anger)
+            `
         }),
         headers: {
           'Content-Type': 'application/json'
@@ -31,7 +115,7 @@ function App() {
       console.log(data);
       setChatHistory((oldChatHistory) => [...oldChatHistory, {
         role: "user",
-        parts: [{ text: value }]
+        parts: [{ text: scrapedReviews }]
       },
       {
         role: "model",
@@ -70,7 +154,7 @@ function App() {
       <header className="App-header">
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
         <p>
-          Amazon Review Analysis Hack With AI
+          Made by ... @Hack With AI
         </p>
         <p className = "sub-header">Powered by Gemini.</p>
       </header>
@@ -105,19 +189,9 @@ function App() {
           <input
             value = {value}
             placeholder = "Enter URL"
-            onChange = {(e) => setValue(e.target.value + `
-            
-            Please generate a json response of the below form:
-            {
-              {
-                'review':,
-                'date':,
-                'Sentiment Score':,
-                'Primary Emotion':,
-              }
-            }
-            having it's sentiment score in range of -1,1 where the closer it is to 1, the more positive it is, the closer it is to -1, the more -ve it is. 0 means it's a neutral review. Also do an emotion analysis of the review and generate what emotion is being conveyed here (Joy, surprise, sadness, disgust, fear, anger)
-            `)}
+            onChange = {(e) => setValue(e.target.value)}
+            //onChange = {(e) => URL = e.target.value}
+            //onChange={(e) => setURL(e.target.value)}
           />
           <button onClick = {getResponse}>Review</button>
         </div>

@@ -6,6 +6,15 @@ app.use(cors());
 app.use(express.json());
 require('dotenv').config();
 
+// ------------------------------ Web Scraping -----------------------
+
+console.log('Server Started !')
+
+
+
+
+// ------------------------- Gemini API ---------------------------------
+
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
